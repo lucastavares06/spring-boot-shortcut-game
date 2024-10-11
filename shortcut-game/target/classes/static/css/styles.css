@@ -1,0 +1,131 @@
+/* styles.css */
+
+/* Variáveis de Cores */
+:root {
+    --primary-color: #0056b3; /* Azul Vibrante */
+    --secondary-color: #6c757d; /* Cinza Suave */
+    --background-color: #f4f7fa; /* Branco Suave */
+    --text-color: #343a40; /* Texto Escuro */
+    --border-color: #e0e0e0; /* Borda Leve */
+}
+
+/* Reseta alguns estilos padrão */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Tabelas */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.table th, .table td {
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.table th {
+    background-color: var(--primary-color);
+    color: #ffffff;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9; /* Cinza claro para as linhas ímpares */
+}
+
+/* Botões */
+.btn {
+    font-size: 1rem;
+    padding: 10px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #004494; /* Azul mais escuro */
+}
+
+.btn-warning {
+    background-color: #ffc107; /* Amarelo padrão */
+    border: none;
+    color: white;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800; /* Amarelo Escuro */
+}
+
+.btn-danger {
+    background-color: #dc3545; /* Vermelho padrão */
+    border: none;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c82333; /* Vermelho Escuro */
+}
+
+/* Formulários */
+.form-label {
+    font-weight: bold;
+}
+
+.form-control {
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25); /* Cor de foco ajustada */
+}
+
+.invalid-feedback {
+    font-size: 0.875rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .navbar-nav {
+        text-align: center;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+}

@@ -1,0 +1,36 @@
+<!-- navbar.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Navbar</title>
+</head>
+<body>
+<div th:fragment="navbar">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Shortcut</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" th:href="@{/}" aria-current="page">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/categories}">Categories</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/games}">Games</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" th:href="@{/platforms}">Platforms</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</div>
+</body>
+</html>
