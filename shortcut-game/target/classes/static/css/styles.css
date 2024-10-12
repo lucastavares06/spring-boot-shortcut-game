@@ -7,6 +7,12 @@
     --background-color: #f4f7fa; /* Branco Suave */
     --text-color: #343a40; /* Texto Escuro */
     --border-color: #e0e0e0; /* Borda Leve */
+    --success-color: #d4edda; /* Verde claro para sucesso */
+    --success-border: #c3e6cb; /* Borda verde claro */
+    --success-text: #155724; /* Texto verde escuro */
+    --error-color: #f8d7da; /* Vermelho claro para erro */
+    --error-border: #f5c6cb; /* Borda vermelha claro */
+    --error-text: #721c24; /* Texto vermelho escuro */
 }
 
 /* Reseta alguns estilos padrão */
@@ -27,6 +33,26 @@ body {
     max-width: 1200px;
     margin: auto;
     padding: 20px;
+}
+
+/* Alertas */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    position: relative;
+}
+
+.alert-success {
+    background-color: var(--success-color);
+    border: 1px solid var(--success-border);
+    color: var(--success-text);
+}
+
+.alert-danger {
+    background-color: var(--error-color);
+    border: 1px solid var(--error-border);
+    color: var(--error-text);
 }
 
 /* Navbar */

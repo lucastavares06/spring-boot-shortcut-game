@@ -9,10 +9,15 @@
 </head>
 <body>
 <div th:replace="navbar :: navbar"></div>
+
+<div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
+
+<div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+
 <div class="container mt-5">
   <h1 class="mb-4">Games</h1>
   <a th:href="@{/games/create}" class="btn btn-primary mb-3">Create New Game</a>
-  <table class="table table-striped">
+  <table class="table">
     <thead>
     <tr>
       <th>ID</th>
