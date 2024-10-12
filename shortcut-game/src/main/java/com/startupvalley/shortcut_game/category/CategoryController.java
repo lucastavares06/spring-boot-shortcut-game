@@ -1,7 +1,8 @@
 package com.startupvalley.shortcut_game.category;
 
-import com.startupvalley.shortcut_game.exception.ResourceDependencyException;
 import com.startupvalley.shortcut_game.exception.ResourceNotFoundException;
+import com.startupvalley.shortcut_game.game.Game;
+import com.startupvalley.shortcut_game.util.FlashMessageUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,17 +41,21 @@ public class CategoryController {
         }
         try {
             categoryService.save(category);
-            addFlashMessage(redirectAttributes, true, SAVE_SUCCESS_MESSAGE);
+            FlashMessageUtil.addSuccessMessage(redirectAttributes, SAVE_SUCCESS_MESSAGE);
         } catch (Exception ex) {
-            addFlashMessage(redirectAttributes, false, UNEXPECTED_ERROR_MESSAGE + ex.getMessage());
+            FlashMessageUtil.addErrorMessage(redirectAttributes, UNEXPECTED_ERROR_MESSAGE + ex.getMessage());
         }
         return "redirect:/categories";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        Category category = categoryService.findById(id);
+        Category category = categoryService.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        categoryService.getErrorMessageNotFound(id)));
+
         model.addAttribute("category", category);
+
         return "categories/form";
     }
 
@@ -58,20 +63,18 @@ public class CategoryController {
     public String deleteCategory(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             String message = categoryService.deleteById(id); // Capture the message from the service
-            addFlashMessage(redirectAttributes, true, DELETE_SUCCESS_MESSAGE + " " + message);
+            FlashMessageUtil.addSuccessMessage(redirectAttributes, DELETE_SUCCESS_MESSAGE + " " + message);
         } catch (ResourceNotFoundException ex) {
-            addFlashMessage(redirectAttributes, false, categoryService.getErrorMessageNotFound(id));
+            FlashMessageUtil.addErrorMessage(redirectAttributes, categoryService.getErrorMessageNotFound(id));
         } catch (Exception ex) {
-            addFlashMessage(redirectAttributes, false, UNEXPECTED_ERROR_MESSAGE + ex.getMessage());
+            FlashMessageUtil.addErrorMessage(redirectAttributes, UNEXPECTED_ERROR_MESSAGE + ex.getMessage());
         }
         return "redirect:/categories";
     }
 
-    private void addFlashMessage(RedirectAttributes redirectAttributes, boolean success, String message) {
-        if (success) {
-            redirectAttributes.addFlashAttribute("successMessage", message);
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", message);
-        }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public String handleResourceNotFoundException(ResourceNotFoundException ex, RedirectAttributes redirectAttributes) {
+        FlashMessageUtil.addErrorMessage(redirectAttributes, ex.getMessage());
+        return "redirect:/categories";
     }
 }

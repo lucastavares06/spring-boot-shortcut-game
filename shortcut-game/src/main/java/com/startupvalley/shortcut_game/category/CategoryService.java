@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryService {
@@ -18,9 +19,8 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Category findById(Long id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(ERROR_MESSAGE_NOT_FOUND + id));
+    public Optional<Category> findById(Long id) {
+        return categoryRepository.findById(id);
     }
 
     public void save(Category category) {
@@ -28,7 +28,12 @@ public class CategoryService {
     }
 
     public String deleteById(Long categoryId) {
-        Category category = findById(categoryId); // Find the category first
+        if (!categoryRepository.existsById(categoryId)) {
+            throw new ResourceNotFoundException(ERROR_MESSAGE_NOT_FOUND + categoryId);
+        }
+
+        Category category = findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException(ERROR_MESSAGE_NOT_FOUND + categoryId));
 
         int affectedGamesCount = category.getGames().size(); // Count the games
 

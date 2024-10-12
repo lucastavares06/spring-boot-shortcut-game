@@ -2,6 +2,7 @@ package com.startupvalley.shortcut_game.platform;
 
 import com.startupvalley.shortcut_game.exception.ResourceDependencyException;
 import com.startupvalley.shortcut_game.exception.ResourceNotFoundException;
+import com.startupvalley.shortcut_game.util.FlashMessageUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,16 +41,21 @@ public class PlatformController {
         }
         try {
             platformService.save(platform);
-            addFlashMessage(redirectAttributes, true, SAVE_SUCCESS_MESSAGE);
+            FlashMessageUtil.addSuccessMessage(redirectAttributes, SAVE_SUCCESS_MESSAGE);
         } catch (Exception ex) {
-            addFlashMessage(redirectAttributes, false, UNEXPECTED_ERROR_MESSAGE + ex.getMessage());
+            FlashMessageUtil.addErrorMessage(redirectAttributes, UNEXPECTED_ERROR_MESSAGE + ex.getMessage());
         }
         return "redirect:/platforms";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        model.addAttribute("platform", platformService.findById(id).orElse(new Platform()));
+        Platform platform = platformService.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        platformService.getErrorMessageNotFound(id)));
+
+        model.addAttribute("platform", platform);
+
         return "platforms/form";
     }
 
@@ -57,22 +63,20 @@ public class PlatformController {
     public String deletePlatform(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             platformService.deleteById(id);
-            addFlashMessage(redirectAttributes, true, DELETE_SUCCESS_MESSAGE);
+            FlashMessageUtil.addSuccessMessage(redirectAttributes, DELETE_SUCCESS_MESSAGE);
         } catch (ResourceDependencyException ex) {
-            addFlashMessage(redirectAttributes, false, platformService.getErrorMessageDependency());
+            FlashMessageUtil.addErrorMessage(redirectAttributes, platformService.getErrorMessageDependency());
         } catch (ResourceNotFoundException ex) {
-            addFlashMessage(redirectAttributes, false, platformService.getErrorMessageNotFound(id));
+            FlashMessageUtil.addErrorMessage(redirectAttributes, platformService.getErrorMessageNotFound(id));
         } catch (Exception ex) {
-            addFlashMessage(redirectAttributes, false, UNEXPECTED_ERROR_MESSAGE + ex.getMessage());
+            FlashMessageUtil.addErrorMessage(redirectAttributes, UNEXPECTED_ERROR_MESSAGE + ex.getMessage());
         }
         return "redirect:/platforms";
     }
 
-    private void addFlashMessage(RedirectAttributes redirectAttributes, boolean success, String message) {
-        if (success) {
-            redirectAttributes.addFlashAttribute("successMessage", message);
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", message);
-        }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public String handleResourceNotFoundException(ResourceNotFoundException ex, RedirectAttributes redirectAttributes) {
+        FlashMessageUtil.addErrorMessage(redirectAttributes, ex.getMessage());
+        return "redirect:/platforms";
     }
 }

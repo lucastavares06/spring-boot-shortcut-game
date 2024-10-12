@@ -4,6 +4,7 @@ import com.startupvalley.shortcut_game.category.CategoryService;
 import com.startupvalley.shortcut_game.exception.ResourceNotFoundException;
 import com.startupvalley.shortcut_game.platform.Platform;
 import com.startupvalley.shortcut_game.platform.PlatformService;
+import com.startupvalley.shortcut_game.util.FlashMessageUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,9 +52,9 @@ public class GameController {
     public String saveGame(@Valid @ModelAttribute Game game, RedirectAttributes redirectAttributes) {
         try {
             gameService.save(game);
-            addFlashMessage(redirectAttributes, true, SAVE_SUCCESS_MESSAGE);
+            FlashMessageUtil.addSuccessMessage(redirectAttributes, SAVE_SUCCESS_MESSAGE);
         } catch (Exception ex) {
-            addFlashMessage(redirectAttributes, false, UNEXPECTED_ERROR_MESSAGE + ex.getMessage());
+            FlashMessageUtil.addErrorMessage(redirectAttributes, UNEXPECTED_ERROR_MESSAGE + ex.getMessage());
         }
         return "redirect:/games";
     }
@@ -79,20 +80,18 @@ public class GameController {
     public String deleteGame(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             gameService.deleteById(id);
-            addFlashMessage(redirectAttributes, true, DELETE_SUCCESS_MESSAGE);
+            FlashMessageUtil.addSuccessMessage(redirectAttributes, DELETE_SUCCESS_MESSAGE);
         } catch (ResourceNotFoundException ex) {
-            addFlashMessage(redirectAttributes, false, gameService.getErrorMessageNotFound(id));
+            FlashMessageUtil.addErrorMessage(redirectAttributes, gameService.getErrorMessageNotFound(id));
         } catch (Exception ex) {
-            addFlashMessage(redirectAttributes, false, UNEXPECTED_ERROR_MESSAGE + ex.getMessage());
+            FlashMessageUtil.addErrorMessage(redirectAttributes, UNEXPECTED_ERROR_MESSAGE + ex.getMessage());
         }
         return "redirect:/games";
     }
 
-    private void addFlashMessage(RedirectAttributes redirectAttributes, boolean success, String message) {
-        if (success) {
-            redirectAttributes.addFlashAttribute("successMessage", message);
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", message);
-        }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public String handleResourceNotFoundException(ResourceNotFoundException ex, RedirectAttributes redirectAttributes) {
+        FlashMessageUtil.addErrorMessage(redirectAttributes, ex.getMessage());
+        return "redirect:/games";
     }
 }
